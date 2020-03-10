@@ -1,10 +1,10 @@
 %X LATEX
 %%
-"\documentclass".* {BEGIN LATEX;}
-<LATEX>"\usepackage".* ;
-<LATEX>"\begin".* ;
-<LATEX>"\title".* {printf("\nTitle %s", &yytext[7]);}
-<LATEX>"\section" {printf("\nSection");}
+\\documentclass.* {BEGIN LATEX; printf("\nTitle %s", yytext);}
+<LATEX>\\usepackage.* {printf("\nentrou");};
+<LATEX>\\begin.* ;
+<LATEX>\\title.* {printf("\nTitle %s", &yytext[0]);}
+<LATEX>\\section {printf("\nSection");}
 \n ; //nao faz nada
 %%
 int main()
