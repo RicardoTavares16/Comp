@@ -18,9 +18,10 @@ decimal {number}[,.]{number}
 lowerCase [a-z]+
 upperCase [A-Z]+
 reserved "++"|"--"|"null"|"Integer"|"System"
-expo [e|E]("+"|"-")
+expo [eE][+-]{number}
 id ({lowerCase}|{upperCase}|"_"|"$")({lowerCase}|{upperCase}|"_"|"$"|{number})*
 intlit 0|[1-9]+|([1-9][,_]{number})+
+
 %X COMMENT
 %X STRING
 %%
@@ -68,20 +69,25 @@ intlit 0|[1-9]+|([1-9][,_]{number})+
 "String" {if(printTokens == 1) {printf("STRING\n");} column += yyleng;}
 "void" {if(printTokens == 1) {printf("VOID\n");} column += yyleng;}
 "while" {if(printTokens == 1) {printf("WHILE\n");} column += yyleng;}
-{reserved} {if(printTokens == 1) {printf("RESERVED\n");} column += yyleng;}
+{reserved} {if(printTokens == 1) {printf("RESERVED(%s)\n",yytext);} column += yyleng;}
 {id} {if(printTokens == 1) {printf("ID(%s)\n",yytext);} column += yyleng;}
 {intlit} {if(printTokens == 1) {printf("INTLIT(%s)\n",yytext);} column += yyleng;}
+(\t|" "|\f) {column += yyleng;}
+(\n|\r|\r\n) {line++; column = 1;}
 
 "//" {BEGIN COMMENT; column += yyleng;}
 "/*" {multiLineComment = 1;BEGIN COMMENT; commentTracker.line = line; commentTracker.column = column; column += yyleng;}
 <COMMENT>"*/" {if(multiLineComment == 1){multiLineComment=0;BEGIN 0;} column = 1;}
-<COMMENT>(\n|\r|\r\n) {if(multiLineComment == 0){;BEGIN 0;} column += yyleng;} //apanha comentario simples
+<COMMENT>(\n|\r|\r\n) {if(multiLineComment == 0){;BEGIN 0;} line++; column += yyleng;} //apanha comentario simples
 <COMMENT><<EOF>> {printf("Line %d, col %d: unterminated comment\n", commentTracker.line, commentTracker.column); yyterminate();}
 <COMMENT>. //nao faz nada
 
 \"  {stringTracker.line = line; stringTracker.column = column; column += yyleng; BEGIN STRING;}
 <STRING>\" {if(printTokens == 1) {printf("END STRING\n");} BEGIN 0; column += yyleng;}
 <STRING>\t  {column += yyleng;}
+<STRING><<EOF>> {printf("Line %d, col %d: unterminated string literal\n", stringTracker.line, stringTracker.column); yyterminate();}
+
+. {printf("Line %d, col %d: illegal character (%s)\n", line, column, yytext); column += yyleng;}
 
 %%
 int main(int argc, char** argv)
