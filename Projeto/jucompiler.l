@@ -5,22 +5,24 @@ int line = 1;
 int column = 1;
 int printTokens = 0;
 
-struct Pos{
+struct Position {
         int column;
         int line;
     };
-struct Pos commentTracker;
-struct Pos stringTracker;
-struct Pos illegalTracker;
+struct Position commentTracker;
+struct Position stringTracker;
 %}
 
 number [0-9]+
+decimal {number}[,.]{number}
 lowerCase [a-z]+
 upperCase [A-Z]+
 reserved "++"|"--"|"null"|"Integer"|"System"
+expo [e|E]("+"|"-")
 id ({lowerCase}|{upperCase}|"_"|"$")({lowerCase}|{upperCase}|"_"|"$"|{number})*
-
+intlit 0|[1-9]+|([1-9][,_]{number})+
 %X COMMENT
+%X STRING
 %%
 
 "true"|"false" {if(printTokens == 1) {printf("BOOLLIT\n");} column += yyleng;}
@@ -68,13 +70,18 @@ id ({lowerCase}|{upperCase}|"_"|"$")({lowerCase}|{upperCase}|"_"|"$"|{number})*
 "while" {if(printTokens == 1) {printf("WHILE\n");} column += yyleng;}
 {reserved} {if(printTokens == 1) {printf("RESERVED\n");} column += yyleng;}
 {id} {if(printTokens == 1) {printf("ID(%s)\n",yytext);} column += yyleng;}
+{intlit} {if(printTokens == 1) {printf("INTLIT(%s)\n",yytext);} column += yyleng;}
 
 "//" {BEGIN COMMENT; column += yyleng;}
 "/*" {multiLineComment = 1;BEGIN COMMENT; commentTracker.line = line; commentTracker.column = column; column += yyleng;}
-<COMMENT>"*/" {if(multiLineComment == 1){multiLineComment=0;printf("fim comentario\n");BEGIN 0;} column = 1;}
-<COMMENT>(\n|\r|\r\n) {if(multiLineComment == 0){printf("comentario simples\n");BEGIN 0;} column += yyleng;} //apanha comentario simples
+<COMMENT>"*/" {if(multiLineComment == 1){multiLineComment=0;BEGIN 0;} column = 1;}
+<COMMENT>(\n|\r|\r\n) {if(multiLineComment == 0){;BEGIN 0;} column += yyleng;} //apanha comentario simples
 <COMMENT><<EOF>> {printf("Line %d, col %d: unterminated comment\n", commentTracker.line, commentTracker.column); yyterminate();}
 <COMMENT>. //nao faz nada
+
+\"  {stringTracker.line = line; stringTracker.column = column; column += yyleng; BEGIN STRING;}
+<STRING>\" {if(printTokens == 1) {printf("END STRING\n");} BEGIN 0; column += yyleng;}
+<STRING>\t  {column += yyleng;}
 
 %%
 int main(int argc, char** argv)
