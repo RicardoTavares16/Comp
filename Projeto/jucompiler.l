@@ -17,16 +17,16 @@ number [0-9]+
 decimal {number}[,.]{number}
 lowerCase [a-z]+
 upperCase [A-Z]+
-reserved "++"|"--"|"null"|"Integer"|"System"
+reserved "++"|"--"|"null"|"Integer"|"System"|"break"|"byte"|"case"|"catch"|"char"|"const"|"enum"|"extends"|"final"|"finally"|"float"|"for"|"implements"|"import"|"instanceof"|"interface"|"long"|"native"|"new"|"protected"|"short"|"strictfp"|"super"|"this"|"throw"|"throws"|"transient"|"try"|"volatile"|"Integer"|"System"|"switch"|"assert"|"default"|"package"|"synchronized"|"do"|"goto"|"private"|"abstract"|"continue"|"null"
 expo [eE][+-]{number}
 id ({lowerCase}|{upperCase}|"_"|"$")({lowerCase}|{upperCase}|"_"|"$"|{number})*
-intlit 0|[1-9]+|([1-9][,_]{number})+
+intlit 0|[1-9]+|([1-9][,_]*{number})*
 
 %X COMMENT
 %X STRING
 %%
 
-"true"|"false" {if(printTokens == 1) {printf("BOOLLIT\n");} column += yyleng;}
+"true"|"false" {if(printTokens == 1) {printf("BOOLLIT(%s)\n", yytext);} column += yyleng;}
 "&&" {if(printTokens == 1) {printf("AND\n");} column += yyleng;}
 "=" {if(printTokens == 1) {printf("ASSIGN\n");} column += yyleng;}
 "*" {if(printTokens == 1) {printf("STAR\n");} column += yyleng;}
@@ -77,14 +77,15 @@ intlit 0|[1-9]+|([1-9][,_]{number})+
 
 "//" {BEGIN COMMENT; column += yyleng;}
 "/*" {multiLineComment = 1;BEGIN COMMENT; commentTracker.line = line; commentTracker.column = column; column += yyleng;}
-<COMMENT>"*/" {if(multiLineComment == 1){multiLineComment=0;BEGIN 0;} column = 1;}
+<COMMENT>"*/" {if(multiLineComment == 1){multiLineComment = 0; BEGIN 0;} column = 1;}
 <COMMENT>(\n|\r|\r\n) {if(multiLineComment == 0){;BEGIN 0;} line++; column += yyleng;} //apanha comentario simples
 <COMMENT><<EOF>> {printf("Line %d, col %d: unterminated comment\n", commentTracker.line, commentTracker.column); yyterminate();}
 <COMMENT>. //nao faz nada
 
 \"  {stringTracker.line = line; stringTracker.column = column; column += yyleng; BEGIN STRING;}
-<STRING>\" {if(printTokens == 1) {printf("END STRING\n");} BEGIN 0; column += yyleng;}
+<STRING>\" {if(printTokens == 1) {printf("STRLIT(%s)\n", yytext);} BEGIN 0; column += yyleng;}
 <STRING>\t  {column += yyleng;}
+<STRING>\\[^fnrt\\\"] {printf("Line %d, col %d: invalid escape sequence (%s)\n", line, column, yytext);}
 <STRING><<EOF>> {printf("Line %d, col %d: unterminated string literal\n", stringTracker.line, stringTracker.column); yyterminate();}
 
 . {printf("Line %d, col %d: illegal character (%s)\n", line, column, yytext); column += yyleng;}
