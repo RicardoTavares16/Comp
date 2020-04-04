@@ -14,7 +14,6 @@ struct Position stringTracker;
 %}
 
 number [0-9]+
-decimal {number}[,.]{number}
 lowerCase [a-z]+
 upperCase [A-Z]+
 reserved "++"|"--"|"System"|"break"|"byte"|"case"|"catch"|"char"|"const"|"enum"|"extends"|"final"|"finally"|"float"|"for"|"implements"|"import"|"instanceof"|"interface"|"long"|"native"|"new"|"protected"|"short"|"strictfp"|"super"|"this"|"throw"|"throws"|"transient"|"try"|"volatile"|"Integer"|"switch"|"assert"|"default"|"package"|"synchronized"|"do"|"goto"|"private"|"abstract"|"continue"|"null"
@@ -89,9 +88,9 @@ strlit "\""(([^"\\\n\r]|({escapes}))*)"\""
 "//" {BEGIN COMMENT; column += yyleng;}
 "/*" {multiLineComment = 1;BEGIN COMMENT; commentTracker.line = line; commentTracker.column = column; column += yyleng;}
 <COMMENT>"*/" {if(multiLineComment == 1){multiLineComment = 0; BEGIN 0;} column = 1;}
-<COMMENT>(\n|\r|\r\n) {if(multiLineComment == 0){;BEGIN 0;} line++; column = 1;} //apanha comentario simples
+<COMMENT>(\n|\r|\r\n) {if(multiLineComment == 0){BEGIN 0;} line++; column = 1;} //apanha comentario simples
 <COMMENT><<EOF>> {printf("Line %d, col %d: unterminated comment\n", commentTracker.line, commentTracker.column); yyterminate();}
-<COMMENT>. //nao faz nada
+<COMMENT>. {column += yyleng;}
 
 
 
