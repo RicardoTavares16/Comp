@@ -23,11 +23,10 @@ reallitnumber [0-9]+(([0-9]|_)*[0-9])*
 id ({lowerCase}|{upperCase}|"_"|"$")+({lowerCase}|{upperCase}|"_"|"$"|{number})*
 intlit 0|[1-9](\_+{number}|{number})*
 reallit {reallitnumber}({expo}{reallitnumber})|({reallitnumber}"."(({reallitnumber}{expo}{reallitnumber})|{reallitnumber}|{expo}{reallitnumber})?)|"."{reallitnumber}({expo}{reallitnumber})?
-
-escapes		\\n|\\t|\\r|\\f|\\\"|\\\\
-undefEscapes 	\\[^ntrf\"\\]
-lineb 	(\n)|(\r)|(\r\n)
-strlit		"\""(([^"\\\n\r]|({escapes}))*)"\""
+escapes \\n|\\t|\\r|\\f|\\\"|\\\\
+undefEscapes \\[^ntrf\"\\]
+newlineCarriage \n|\r|\r\n
+strlit "\""(([^"\\\n\r]|({escapes}))*)"\""
 
 %X COMMENT
 %X STRING
@@ -77,6 +76,8 @@ strlit		"\""(([^"\\\n\r]|({escapes}))*)"\""
 "void" {if(printTokens == 1) {printf("VOID\n");} column += yyleng;}
 "while" {if(printTokens == 1) {printf("WHILE\n");} column += yyleng;}
 
+
+
 {reserved} {if(printTokens == 1) {printf("RESERVED(%s)\n",yytext);} column += yyleng;}
 {id} {if(printTokens == 1) {printf("ID(%s)\n",yytext);} column += yyleng;}
 {intlit} {if(printTokens == 1) {printf("INTLIT(%s)\n",yytext);} column += yyleng;}
@@ -92,19 +93,23 @@ strlit		"\""(([^"\\\n\r]|({escapes}))*)"\""
 <COMMENT><<EOF>> {printf("Line %d, col %d: unterminated comment\n", commentTracker.line, commentTracker.column); yyterminate();}
 <COMMENT>. //nao faz nada
 
+
+
 "\""  {column += yyleng; stringTracker.line = line; stringTracker.column = (int)(column-yyleng); BEGIN STRING;}
 <STRING>"\"" {BEGIN 0; column += yyleng;}
 <STRING>{escapes} {column += yyleng;}
-<STRING>\\{lineb} {BEGIN 0; column += yyleng; printf("Line %d, col %d: invalid escape sequence (\\)\n", line, (int)(column-yyleng)); printf("Line %d, col %d: unterminated string literal\n", stringTracker.line, stringTracker.column); column = 1; line++;}
-<STRING>{lineb} { BEGIN 0; printf("Line %d, col %d: unterminated string literal\n", stringTracker.line, stringTracker.column) ; column = 1; line++;}
+<STRING>\\{newlineCarriage} {BEGIN 0; column += yyleng; printf("Line %d, col %d: invalid escape sequence (\\)\n", line, (int)(column-yyleng)); printf("Line %d, col %d: unterminated string literal\n", stringTracker.line, stringTracker.column); column = 1; line++;}
+<STRING>{newlineCarriage} {BEGIN 0; printf("Line %d, col %d: unterminated string literal\n", stringTracker.line, stringTracker.column) ; column = 1; line++;}
 <STRING><<EOF>> {column += yyleng; printf("Line %d, col %d: unterminated string literal\n", stringTracker.line, stringTracker.column); yyterminate();}
 <STRING>{undefEscapes}	{column += yyleng; printf("Line %d, col %d: invalid escape sequence (%s)\n", line, (int)(column-yyleng), yytext);}
 <STRING>. {column += yyleng;}
 
+
+
 (\t|\f) {column += yyleng;}
 " " {column += 1;}
-{lineb} {line++; column = 1;}
-. { column += yyleng; printf("Line %d, col %d: illegal character (%s)\n", line, (int)(column-yyleng), yytext);}
+{newlineCarriage} {line++; column = 1;}
+. {column += yyleng; printf("Line %d, col %d: illegal character (%s)\n", line, (int)(column-yyleng), yytext);}
 
 %%
 int main(int argc, char** argv)
