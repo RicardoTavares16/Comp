@@ -17,7 +17,7 @@ number [0-9]+
 decimal {number}[,.]{number}
 lowerCase [a-z]+
 upperCase [A-Z]+
-reserved "++"|"--"|"null"|"Integer"|"System"|"break"|"byte"|"case"|"catch"|"char"|"const"|"enum"|"extends"|"final"|"finally"|"float"|"for"|"implements"|"import"|"instanceof"|"interface"|"long"|"native"|"new"|"protected"|"short"|"strictfp"|"super"|"this"|"throw"|"throws"|"transient"|"try"|"volatile"|"Integer"|"System"|"switch"|"assert"|"default"|"package"|"synchronized"|"do"|"goto"|"private"|"abstract"|"continue"|"null"
+reserved "++"|"--"|"System"|"break"|"byte"|"case"|"catch"|"char"|"const"|"enum"|"extends"|"final"|"finally"|"float"|"for"|"implements"|"import"|"instanceof"|"interface"|"long"|"native"|"new"|"protected"|"short"|"strictfp"|"super"|"this"|"throw"|"throws"|"transient"|"try"|"volatile"|"Integer"|"switch"|"assert"|"default"|"package"|"synchronized"|"do"|"goto"|"private"|"abstract"|"continue"|"null"
 expo [eE][+-]?
 reallitnumber [0-9]+(([0-9]|_)*[0-9])*
 id ({lowerCase}|{upperCase}|"_"|"$")+({lowerCase}|{upperCase}|"_"|"$"|{number})*
