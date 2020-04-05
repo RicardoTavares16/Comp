@@ -33,7 +33,7 @@ strlit "\""(([^"\\\n\r]|({escapes}))*)"\""
 %X STRINGSTATE
 %%
 
-"true"|"false" {if(printTokens == 1) {printf("BOOLLIT(%s)\n", yytext);} column += yyleng; if(printTokens == 0){return BOOLIT;}}
+"true"|"false" {if(printTokens == 1) {printf("BOOLLIT(%s)\n", yytext);} column += yyleng; if(printTokens == 0){return BOOLLIT;}}
 "&&" {if(printTokens == 1) {printf("AND\n");} column += yyleng; if(printTokens == 0){return AND;}}
 "=" {if(printTokens == 1) {printf("ASSIGN\n");} column += yyleng; if(printTokens == 0){return ASSIGN;}}
 "*" {if(printTokens == 1) {printf("STAR\n");} column += yyleng; if(printTokens == 0){return STAR;}}

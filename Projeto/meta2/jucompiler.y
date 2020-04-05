@@ -2,6 +2,7 @@
 	#include <stdio.h>
 	#include <stdlib.h>
     #include <string.h>
+	#include "node.h"
 
     int yylex(void);
     extern char* yytext;
@@ -14,7 +15,7 @@
 	struct node* node;
 }
 
-%token BOOLIT
+%token BOOLLIT
 %token AND
 %token ASSIGN
 %token STAR
@@ -63,6 +64,8 @@
 %token <string> REALLIT
 %token <string> STRLIT
 
+%type <node> Program
+%type <node> SubProgram
 %type <node> MethodDecl
 %type <node> FieldDecl
 %type <node> Empty
@@ -75,8 +78,36 @@
 %type <node> SubFormalParams
 %type <node> SubMethodBody
 %type <node> Statement
+%type <node> MultipleStatements
 %type <node> VarDecl
 %type <node> SubVarDecl
+%type <node> Expr
+%type <node> OptExpr
+%type <node> ExprStrlit
+%type <node> Assignment
+%type <node> MethodInvocation
+%type <node> MultipleCommaExpr
+%type <node> OptExprCommaExpr
+%type <node> ParseArgs
+%type <node> OptAssignMethodinvoParseargs
+%type <node> OptDotLength
+
+
+%left COMMA
+%right ASSIGN
+%left OR 
+%left AND 
+%left XOR
+%nonassoc EQ NE
+%left GE LE GT LT
+%left LSHIFT RSHIFT
+%left PLUS MINUS
+%left STAR DIV MOD 
+
+
+%right NOT
+%left LPAR RPAR LBRACE RBRACE LSQ RSQ 
+%right ELSE
 
 %%
 
@@ -143,7 +174,88 @@ SubVarDecl: Empty {;}
 		  | COMMA ID SubVarDecl {;}
 	      ;
 
+Statement: LBRACE MultipleStatements RBRACE {;}
+		 | IF LPAR Expr RPAR Statement ELSE Statement {;}
+		 | IF LPAR Expr RPAR Statement %prec ELSE {;}
+		 | WHILE LPAR Expr RPAR Statement {;}
+		 | RETURN OptExpr SEMICOLON {;}
+		 | OptAssignMethodinvoParseargs SEMICOLON {;}
+		 | PRINT LPAR ExprStrlit RPAR SEMICOLON {;}
+    	 | error SEMICOLON {;}
+		 ;
 
+MultipleStatements: Empty {;}
+		| Statement MultipleStatements {;}
+		;
+
+
+OptExpr: Expr {;}
+	   | Empty {;}
+	   ;
+
+OptAssignMethodinvoParseargs: Assignment {;}
+							| MethodInvocation {;}
+							| ParseArgs {;}
+							| Empty {;}
+							;
+
+ExprStrlit: Expr {;}
+		  | STRLIT {;}
+		  ;
+
+Assignment: ID ASSIGN Expr {;}
+		  ;
+
+MethodInvocation: ID LPAR OptExprCommaExpr RPAR {;}
+				| ID LPAR error RPAR {;}
+				;
+
+ParseArgs: PARSEINT LPAR ID LSQ Expr RSQ RPAR {;}
+		 | PARSEINT LPAR error RPAR {;}
+		 ;
+
+OptExprCommaExpr: Expr MultipleCommaExpr {;}
+				| Empty {;}
+				;
+
+MultipleCommaExpr: Empty {;}
+				 | MultipleCommaExpr COMMA Expr {;}
+				 ;
+
+Expr: Expr PLUS Expr {;}
+	| Expr MINUS Expr {;}
+	| Expr STAR Expr {;}
+	| Expr DIV Expr {;}
+	| Expr MOD Expr {;}
+    | Expr AND Expr {;}
+    | Expr OR Expr {;}
+	| Expr XOR Expr {;}
+	| Expr LSHIFT Expr {;}
+	| Expr RSHIFT Expr {;}
+    | Expr EQ Expr {;}
+    | Expr GE Expr {;}
+    | Expr GT Expr {;}
+    | Expr LE Expr {;}
+    | Expr LT Expr {;}
+    | Expr NE Expr {;}
+    | MINUS Expr {;}
+    | NOT Expr {;}
+	| PLUS Expr {;}
+    | LPAR Expr RPAR {;}
+	| MethodInvocation {;}
+ 	| Assignment {;}
+	| ParseArgs {;}
+    | ID OptDotLength {;} 
+	| INTLIT {;} 
+    | BOOLLIT {;}
+	| REALLIT {;}
+    | LPAR error RPAR {;}
+	;
+
+OptDotLength: DOTLENGTH {;}
+			| Empty {;}
+			;	
+	
 Empty: {;} 
 	 ; 
 

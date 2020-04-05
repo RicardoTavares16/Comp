@@ -161,16 +161,6 @@ FieldDecl: PUBLIC STATIC Type ID SubFieldDecl SEMI {if(buildingTree==1){
 	| error SEMI {if(buildingTree==1){buildingTree=0;syn_error=1;}}
 	;
 SubFieldDecl:COMMA ID SubFieldDecl {if(buildingTree==1){
-			//printf("TIPO: %s",$1->type);
-			/*aux_node = create_node(NODE_Comp);
-			insert_child($3,aux_node);
-			aux_node2 = create_node(NODE_Id);
-			aux_node2->value = $2;
-			insert_brother($3->child,aux_node2);
-			$$ = create_node(NODE_FieldDecl);
-			insert_brother($$,$3);
-			*/
-
 			$$ = create_node(NODE_FieldDecl);
 			aux_node = create_node(NODE_Comp);
 			insert_child($$,aux_node);	
