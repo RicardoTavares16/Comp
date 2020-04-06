@@ -21,7 +21,7 @@
 	struct node* node;
 }
 
-%token BOOLLIT
+
 %token AND
 %token ASSIGN
 %token STAR
@@ -69,6 +69,7 @@
 %token <string> INTLIT
 %token <string> REALLIT
 %token <string> STRLIT
+%token <string> BOOLLIT
 
 %type <node> Program
 %type <node> SubProgram
@@ -535,7 +536,7 @@ Expr: Expr PLUS Expr {; }
 			}
 		} 
 	| INTLIT { $$ = createNode(Node_Intlit); $$->value = $1; } 
-    | BOOLLIT { /*$$ = createNode(Node_Boolit); $$->value = $1; */}
+    | BOOLLIT { $$ = createNode(Node_Boolit); $$->value = $1; }
 	| REALLIT { $$ = createNode(Node_Reallit); $$->value = $1; }
     | LPAR error RPAR 
 		{
