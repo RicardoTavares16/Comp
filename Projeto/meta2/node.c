@@ -20,9 +20,9 @@ const char* getTypeName(NodeType typeEnum)
    {
     case Node_Program: return "Program";
 	case Node_Id: return "Id";
-	case Node_Intlit: return "Intlit";
-	case Node_Reallit: return "Reallit";
-	case Node_Strlit: return "Strlit";
+	case Node_Intlit: return "DecLit";
+	case Node_Reallit: return "RealLit";
+	case Node_Strlit: return "StrLit";
 	case Node_Boolit: return "Boolit";
 	case Node_FieldDecl: return "FieldDecl";
 	case Node_Comp: return "Comp";
@@ -38,7 +38,7 @@ const char* getTypeName(NodeType typeEnum)
 	case Node_Double: return "Double";
 	case Node_VarDecl: return "VarDecl";
 	case Node_Block: return "Block";
-	case Node_While: return "While";
+	case Node_While: return "While"; 
 	case Node_Return: return "Return";
 	case Node_Print: return "Print";
 	case Node_Error: return "Error";
@@ -53,13 +53,14 @@ const char* getTypeName(NodeType typeEnum)
 	case Node_And: return "And";
 	case Node_Or: return "Or";
 	case Node_Eq: return "Eq";
-	case Node_Ge: return "Ge";
+	case Node_Ge: return "Geq";
 	case Node_Gt: return "Gt";
-	case Node_Le: return "Le";
+	case Node_Le: return "Leq";
 	case Node_Lt: return "Lt";
-	case Node_Ne: return "Ne";
+	case Node_Ne: return "Neq";
 	case Node_Sub: return "Sub";
 	case Node_Add: return "Add";
+	//not minus plus doWhile 
    }
 }
 

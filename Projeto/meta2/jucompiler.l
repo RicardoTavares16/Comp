@@ -37,7 +37,7 @@ strlit "\""(([^"\\\n\r]|({escapes}))*)"\""
 %X STRINGSTATE
 %%
 
-"true"|"false" {if(printTokens == 1) {printf("BOOLLIT(%s)\n", yytext);} column += yyleng; if(printTokens == 0){return BOOLLIT;}}
+"true"|"false" {if(printTokens == 1) {printf("BOOLLIT(%s)\n", yytext);} column += yyleng; if(printTokens == 0){ yylval.string = strdup(yytext); return BOOLLIT;}}
 "&&" {if(printTokens == 1) {printf("AND\n");} column += yyleng; if(printTokens == 0){return AND;}}
 "=" {if(printTokens == 1) {printf("ASSIGN\n");} column += yyleng; if(printTokens == 0){return ASSIGN;}}
 "*" {if(printTokens == 1) {printf("STAR\n");} column += yyleng; if(printTokens == 0){return STAR;}}
@@ -83,11 +83,11 @@ strlit "\""(([^"\\\n\r]|({escapes}))*)"\""
 
 
 
-{reserved} {if(printTokens == 1) {printf("RESERVED(%s)\n",yytext);} column += yyleng; if(printTokens == 0){return RESERVED;}}
-{id} {if(printTokens == 1) {printf("ID(%s)\n",yytext);} column += yyleng; if(printTokens == 0){return ID;}}
-{intlit} {if(printTokens == 1) {printf("INTLIT(%s)\n",yytext);} column += yyleng; if(printTokens == 0){return INTLIT;}}
-{reallit} {if(printTokens == 1) {printf("REALLIT(%s)\n",yytext);} column += yyleng; if(printTokens == 0){return REALLIT;}}
-{strlit} {if(printTokens == 1) {printf("STRLIT(%s)\n",yytext);} column += yyleng; if(printTokens == 0){return STRLIT;}}
+{reserved} {if(printTokens == 1) {printf("RESERVED(%s)\n",yytext);} column += yyleng; if(printTokens == 0){ yylval.string = strdup(yytext); return RESERVED;}}
+{id} {if(printTokens == 1) {printf("ID(%s)\n",yytext);} column += yyleng; if(printTokens == 0){ yylval.string = strdup(yytext); return ID;}}
+{intlit} {if(printTokens == 1) {printf("INTLIT(%s)\n",yytext);} column += yyleng; if(printTokens == 0){ yylval.string = strdup(yytext); return INTLIT;}}
+{reallit} {if(printTokens == 1) {printf("REALLIT(%s)\n",yytext);} column += yyleng; if(printTokens == 0){ yylval.string = strdup(yytext); return REALLIT;}}
+{strlit} {if(printTokens == 1) {printf("STRLIT(%s)\n",yytext);} column += yyleng; if(printTokens == 0){ yylval.string = strdup(yytext); return STRLIT;}}
 
 
 

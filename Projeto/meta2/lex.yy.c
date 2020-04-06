@@ -1005,7 +1005,7 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 YY_RULE_SETUP
 #line 40 "jucompiler.l"
-{if(printTokens == 1) {printf("BOOLLIT(%s)\n", yytext);} column += yyleng; if(printTokens == 0){return BOOLLIT;}}
+{if(printTokens == 1) {printf("BOOLLIT(%s)\n", yytext);} column += yyleng; if(printTokens == 0){ yylval.string = strdup(yytext); return BOOLLIT;}}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
@@ -1220,27 +1220,27 @@ YY_RULE_SETUP
 case 44:
 YY_RULE_SETUP
 #line 86 "jucompiler.l"
-{if(printTokens == 1) {printf("RESERVED(%s)\n",yytext);} column += yyleng; if(printTokens == 0){return RESERVED;}}
+{if(printTokens == 1) {printf("RESERVED(%s)\n",yytext);} column += yyleng; if(printTokens == 0){ yylval.string = strdup(yytext); return RESERVED;}}
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
 #line 87 "jucompiler.l"
-{if(printTokens == 1) {printf("ID(%s)\n",yytext);} column += yyleng; if(printTokens == 0){return ID;}}
+{if(printTokens == 1) {printf("ID(%s)\n",yytext);} column += yyleng; if(printTokens == 0){ yylval.string = strdup(yytext); return ID;}}
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
 #line 88 "jucompiler.l"
-{if(printTokens == 1) {printf("INTLIT(%s)\n",yytext);} column += yyleng; if(printTokens == 0){return INTLIT;}}
+{if(printTokens == 1) {printf("INTLIT(%s)\n",yytext);} column += yyleng; if(printTokens == 0){ yylval.string = strdup(yytext); return INTLIT;}}
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
 #line 89 "jucompiler.l"
-{if(printTokens == 1) {printf("REALLIT(%s)\n",yytext);} column += yyleng; if(printTokens == 0){return REALLIT;}}
+{if(printTokens == 1) {printf("REALLIT(%s)\n",yytext);} column += yyleng; if(printTokens == 0){ yylval.string = strdup(yytext); return REALLIT;}}
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
 #line 90 "jucompiler.l"
-{if(printTokens == 1) {printf("STRLIT(%s)\n",yytext);} column += yyleng; if(printTokens == 0){return STRLIT;}}
+{if(printTokens == 1) {printf("STRLIT(%s)\n",yytext);} column += yyleng; if(printTokens == 0){ yylval.string = strdup(yytext); return STRLIT;}}
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
