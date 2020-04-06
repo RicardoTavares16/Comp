@@ -1,8 +1,7 @@
 %{
-//2014230130 Ricardo Sintra Tavares
-
 #include "y.tab.h"
 #include "node.h"
+//2014230130 Ricardo Sintra Tavares
 
 int multiLineComment = 0;
 int line = 1;
@@ -136,6 +135,7 @@ int main(int argc, char** argv)
 			yyparse();
 			if(syntaxError == 0){
 				printTree(tree, 0);
+                free_tree(tree);
 			}
 		}
     }

@@ -2,8 +2,8 @@
 	#include <stdio.h>
 	#include <stdlib.h>
     #include <string.h>
-	#include "y.tab.h"
 	#include "node.h"
+	#include "y.tab.h"
 
     extern int yylex(void);
     extern char* yytext;
@@ -11,6 +11,9 @@
     void yyerror (const char *s);
 	int syntaxError = 0;
 	Node* tree;
+	Node* aux_node;
+	Node* aux_node2;
+	Node* aux_node3;
 %}
 
 %union{
@@ -76,7 +79,6 @@
 %type <node> MethodBody
 %type <node> SubFieldDecl
 %type <node> Type
-%type <node> OptFormalParams
 %type <node> FormalParams
 %type <node> SubFormalParams
 %type <node> SubMethodBody
@@ -114,70 +116,218 @@
 
 %%
 
-Program: CLASS ID LBRACE SubProgram RBRACE{;}
+Program: CLASS ID LBRACE SubProgram RBRACE
+	{
+		$$ = tree = createNode(Node_Program);
+		aux_node = createNode(Node_Id);
+		aux_node->value = $2; 
+		insertChild($$, aux_node);
+		if($4 != NULL){
+			insertBrother(aux_node, $4);
+		}
+	}
 	   ; 
 
-SubProgram: SubProgram MethodDecl {;}
-		  | SubProgram FieldDecl {;}
-		  | SubProgram SEMICOLON {;}
-		  | Empty {;}
+SubProgram: MethodDecl SubProgram 
+			{
+				$$ = $1;
+				if($2 != NULL){
+					insertBrother($$, $2);
+				}
+			}
+		  | FieldDecl SubProgram 
+		  	{
+				$$ = $1;
+				if($2 != NULL){
+					insertBrother($$, $2);
+				}
+		  	}
+		  | SEMICOLON SubProgram { $$ = $2; }
+		  | Empty { $$ = NULL; }
 		  ;
 
 
-MethodDecl: PUBLIC STATIC MethodHeader MethodBody {;}
-		  ;
 
 
-
-FieldDecl: PUBLIC STATIC Type ID SubFieldDecl SEMICOLON {;}
-		 | error SEMICOLON {;}
+FieldDecl: PUBLIC STATIC Type ID SubFieldDecl SEMICOLON 
+		   {
+				$$ = createNode(Node_FieldDecl); 
+				insertChild($$, $3);
+				aux_node2 = createNode(Node_Id);
+				aux_node2->value = $4;
+				insertBrother($$->child, aux_node2);
+				if($5 != NULL){
+					insertBrother($$, $5);
+					changeType($$, $5);
+				}
+			}
+		 | error SEMICOLON { syntaxError = 1;}
 		 ;		  
 
-SubFieldDecl: Empty {;}
-			| SubFieldDecl COMMA ID {;}
+SubFieldDecl: Empty { $$ = NULL; }
+			| COMMA ID SubFieldDecl 
+			{
+				$$ = createNode(Node_FieldDecl);
+				aux_node = createNode(Node_Comp);
+				insertChild($$, aux_node);	
+				aux_node2 = createNode(Node_Id);
+				aux_node2->value = $2;
+				if($$  != NULL){
+					insertBrother($$->child, aux_node2);
+					insertBrother($$, $3);
+				}
+			}
 			;
 
 
-Type: BOOL {;}
-	| INT {;}
-	| DOUBLE {;}
+Type: BOOL { $$ = createNode(Node_Bool); }
+	| INT { $$ = createNode(Node_Int); }
+	| DOUBLE { $$ = createNode(Node_Double); }
 	;
 
+MethodDecl: PUBLIC STATIC MethodHeader MethodBody 
+			{
+				$$ = createNode(Node_MethodDecl);
+				insertChild($$, $3);
+				insertBrother($$->child, $4);
+			}
+		  ;
 
-MethodHeader: Type ID LPAR OptFormalParams RPAR {;}
-            | VOID ID LPAR OptFormalParams RPAR {;}
+
+MethodHeader: Type ID LPAR FormalParams RPAR 
+			{
+				$$ = createNode(Node_MethodHeader);
+				insertChild($$, $1);
+				aux_node = createNode(Node_Id);
+				aux_node->value = $2;
+				insertBrother($$->child, aux_node);			
+				aux_node3 = createNode(Node_MethodParams);		
+				insertBrother($$->child->brother, aux_node3);
+				if($4 != NULL){
+					insertChild($$->child->brother->brother, $4);
+				}
+			}
+            | VOID ID LPAR FormalParams RPAR 
+			{
+				$$ = createNode(Node_MethodHeader);
+				aux_node = createNode(Node_Void);
+				insertChild($$, aux_node);
+				aux_node2 = createNode(Node_Id);
+				aux_node2->value = $2;
+				insertBrother($$->child, aux_node2);
+				aux_node3 = createNode(Node_MethodParams);
+				insertBrother($$->child->brother, aux_node3);
+				if($4 != NULL){
+					insertChild($$->child->brother->brother, $4);
+				}
+			}
 	    	;
 
-OptFormalParams: FormalParams {;}
-			   | Empty {;}
-			   ;
 
-FormalParams: Type ID SubFormalParams {;}
-    		| STRING LSQ RSQ ID {;}
+FormalParams: Type ID SubFormalParams 
+			{
+				$$ = createNode(Node_ParamDecl);
+				insertChild($$, $1);
+				aux_node = createNode(Node_Id);
+				aux_node->value = $2;
+				insertBrother($$->child, aux_node);
+				if ($3 != NULL){
+					insertBrother($$, $3);
+				}
+			}
+    		| STRING LSQ RSQ ID 
+			{
+				$$ = createNode(Node_ParamDecl);
+				aux_node = createNode(Node_StringArray);
+				insertChild($$, aux_node);
+				aux_node2 = createNode(Node_Id);
+				aux_node2->value = $4;
+				insertBrother($$->child, aux_node2);
+			}
+			| Empty { $$ = NULL; }
 			;
 
-SubFormalParams: Empty {;}
-			   | SubFormalParams COMMA Type ID {;}
+SubFormalParams: Empty { $$ = NULL; }
+			   | COMMA Type ID SubFormalParams 
+			   {
+				   	$$ = createNode(Node_ParamDecl);
+					insertChild($$, $2);
+					aux_node = createNode(Node_Id);
+					aux_node->value = $3;
+					insertBrother($$->child, aux_node);
+					if($4 != NULL){
+						insertBrother($$, $4);
+					}
+			   }
 			   ;			   
 
 
-MethodBody: LBRACE SubMethodBody RBRACE {;}
+MethodBody: LBRACE SubMethodBody RBRACE { $$ = $2; }
 		  ;
 
-SubMethodBody: Empty {;}
-			 | SubMethodBody Statement {;}
-			 | SubMethodBody VarDecl {;}
+SubMethodBody: Empty {$$ = createNode(Node_MethodBody);}
+			 | SubMethodBody Statement 
+			 {
+				if($2 != NULL){
+					if($$->child == NULL){
+						insertChild($$, $2);
+					}
+					else{
+						insertBrother($$->child, $2);
+					}
+				}
+			 }
+			 | SubMethodBody VarDecl 
+			 {
+				if($$->child == NULL){
+				insertChild($$, $2);
+				}
+				else{
+					insertBrother($$->child, $2);
+				}
+			 }
 			 ;
 
 
-VarDecl: Type ID SubVarDecl SEMICOLON {;}
+VarDecl: Type ID SubVarDecl SEMICOLON 
+	   {
+		   	$$ = createNode(Node_VarDecl);
+			insertChild($$, $1);
+			aux_node = createNode(Node_Id);
+			aux_node->value = $2;
+			insertBrother($$->child, aux_node);
+			if($3->child != NULL){
+				insertBrother($$, $3);
+				changeType($$, $3);
+			}
+	   }
 	   ;
 
-SubVarDecl: Empty {;}
-		  | COMMA ID SubVarDecl {;}
+SubVarDecl: Empty { $$ = createNode(Node_VarDecl); }
+		  | COMMA ID SubVarDecl 
+		  {
+			$$ = createNode(Node_VarDecl);
+			aux_node2 = createNode(Node_Comp);
+			insertChild($$, aux_node2);
+			aux_node = createNode(Node_Id);
+			aux_node->value = $2;
+			insertBrother($$->child, aux_node);
+			if($3->child != NULL){
+				insertBrother($$, $3);
+			}
+		  }
 	      ;
 
-Statement: LBRACE MultipleStatements RBRACE {;}
+Statement: LBRACE MultipleStatements RBRACE 
+		 {
+			 $$ = $2;
+			if($2 != NULL){
+				if($2->brother != NULL){
+					$$ = create_node(NODE_Block);
+					insert_child($$,$2);
+				}
+			}
+		 }
 		 | IF LPAR Expr RPAR Statement ELSE Statement {;}
 		 | IF LPAR Expr RPAR Statement %prec ELSE {;}
 		 | WHILE LPAR Expr RPAR Statement {;}

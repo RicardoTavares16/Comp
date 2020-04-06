@@ -2,4 +2,4 @@
 
 lex jucompiler.l
 yacc -d jucompiler.y
-cc -o jucompiler y.tab.c lex.yy.c
+cc -o jucompiler node.c y.tab.c lex.yy.c

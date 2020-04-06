@@ -1,14 +1,24 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-
 typedef enum {
-    Node_PROGRAM,
-	Node_ID,
-	Node_INTLIT,
-	Node_REALLIT,
-	Node_STRLIT,
-	Node_BOOLIT
+    Node_Program,
+	Node_Id,
+	Node_Intlit,
+	Node_Reallit,
+	Node_Strlit,
+	Node_Boolit,
+	Node_FieldDecl,
+	Node_Bool,
+	Node_Int,
+	Node_Double,
+	Node_Comp,
+	Node_MethodDecl,
+	Node_MethodHeader,
+	Node_MethodParams,
+	Node_MethodBody,
+	Node_Void,
+	Node_ParamDecl,
+	Node_StringArray,
+	Node_VarDecl
+	
 
 }NodeType;
 
@@ -31,3 +41,4 @@ void changeType(Node* newType ,Node* nodes);
 void printTree(Node* node, int level);
 void printDots(int n);
 void printLeaf(Node* node);
+void free_tree(Node* root);
