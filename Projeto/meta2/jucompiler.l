@@ -2,6 +2,8 @@
 //2014230130 Ricardo Sintra Tavares
 
 #include "y.tab.h"
+#include "node.h"
+
 int multiLineComment = 0;
 int line = 1;
 int column = 1;
@@ -13,6 +15,9 @@ struct Position {
     };
 struct Position commentTracker;
 struct Position stringTracker;
+
+extern Node* tree;
+extern int syntaxError;
 %}
 
 number [0-9]+
@@ -125,6 +130,13 @@ int main(int argc, char** argv)
         else if(strcmp(argv[1],"-e2") == 0){
 			printTokens = 0;
 			yyparse();
+		}
+        else if(strcmp(argv[1],"-t") == 0){
+			printTokens = 0;
+			yyparse();
+			if(syntaxError == 0){
+				printTree(tree, 0);
+			}
 		}
     }
     else if(argc == 1){

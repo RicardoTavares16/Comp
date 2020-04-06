@@ -2,12 +2,15 @@
 	#include <stdio.h>
 	#include <stdlib.h>
     #include <string.h>
+	#include "y.tab.h"
 	#include "node.h"
 
-    int yylex(void);
+    extern int yylex(void);
     extern char* yytext;
 	extern int line, column;
     void yyerror (const char *s);
+	int syntaxError = 0;
+	Node* tree;
 %}
 
 %union{
