@@ -37,10 +37,16 @@ const char* getTypeName(NodeType typeEnum)
 	case Node_Int: return "Int";
 	case Node_Double: return "Double";
 	case Node_VarDecl: return "VarDecl";
-
-
-
-    
+	case Node_Block: return "Block";
+	case Node_While: return "While";
+	case Node_Return: return "Return";
+	case Node_Print: return "Print";
+	case Node_Error: return "Error";
+	case Node_If: return "If";
+    case Node_Assign: return "Assign";
+	case Node_Call: return "Call";
+	case Node_ParseArgs: return "ParseArgs";
+	case Node_Length: return "Length";
    }
 }
 

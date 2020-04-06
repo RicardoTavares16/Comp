@@ -17,7 +17,31 @@ typedef enum {
 	Node_Void,
 	Node_ParamDecl,
 	Node_StringArray,
-	Node_VarDecl
+	Node_VarDecl,
+	Node_Block,
+	Node_While,
+	Node_Return,
+	Node_Print,
+	Node_Error,
+	Node_If,
+	Node_Assign,
+	Node_Call,
+	Node_ParseArgs,
+	Node_Length,
+
+	Node_Mul,
+	Node_Div,
+	Node_Mod,
+	Node_And,
+	Node_Or,
+	Node_Eq,
+	Node_Ge,
+	Node_Gt,
+	Node_Le,
+	Node_Lt,
+	Node_Ne,
+	Node_Sub,
+	Node_Add
 	
 
 }NodeType;
