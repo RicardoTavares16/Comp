@@ -109,7 +109,7 @@
 %left LSHIFT RSHIFT
 %left PLUS MINUS
 %left STAR DIV MOD 
-%right NOT
+%right NOT UMINUS UPLUS
 %left LPAR RPAR LBRACE RBRACE LSQ RSQ 
 %right ELSE
 
@@ -514,9 +514,9 @@ Expr: Expr PLUS Expr { $$ = createNode(Node_Add); insertChild($$, $1); insertBro
     | Expr LE Expr { $$ = createNode(Node_Le); insertChild($$, $1); insertBrother($$->child, $3); }
     | Expr LT Expr { $$ = createNode(Node_Lt); insertChild($$, $1); insertBrother($$->child, $3); }
     | Expr NE Expr { $$ = createNode(Node_Ne); insertChild($$, $1); insertBrother($$->child, $3); }
-    | MINUS Expr %prec NOT { $$ = createNode(Node_Minus); insertChild($$, $2); }
+    | MINUS Expr %prec UMINUS { $$ = createNode(Node_Minus); insertChild($$, $2); }
     | NOT Expr { $$ = createNode(Node_Not); insertChild($$, $2); }
-	| PLUS Expr %prec NOT { $$ = createNode(Node_Plus); insertChild($$, $2); }
+	| PLUS Expr %prec UPLUS { $$ = createNode(Node_Plus); insertChild($$, $2); }
     | LPAR Expr RPAR { $$ = $2; }
 	| MethodInvocation { $$ = $1; }
  	| Assignment { $$ = $1; }
