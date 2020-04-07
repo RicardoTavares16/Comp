@@ -2365,8 +2365,11 @@ int main(int argc, char** argv)
 			yyparse();
 			if(syntaxError == 0){
 				printTree(tree, 0);
-                free_tree(tree);
+                clearTree(tree);
 			}
+            else{
+                clearTree(tree);
+            }
 		}
     }
     else if(argc == 1){

@@ -3,7 +3,7 @@
 lex jucompiler.l
 clang-3.9 -o jucompiler lex.yy.c
 
-FILESPATH=../Comp2020/meta1
+FILESPATH=../../Comp2020/meta1
 
 if [ $# -eq 0 ]
 then

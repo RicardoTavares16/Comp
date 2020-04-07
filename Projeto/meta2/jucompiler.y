@@ -499,14 +499,14 @@ MultipleCommaExpr: Empty { $$ = NULL; }
 					}
 				 ;
 
-Expr: Expr PLUS Expr {; }
-	| Expr MINUS Expr {; }
+Expr: Expr PLUS Expr { $$ = createNode(Node_Add); insertChild($$, $1); insertBrother($$->child, $3); }
+	| Expr MINUS Expr { $$ = createNode(Node_Sub); insertChild($$, $1); insertBrother($$->child, $3); }
 	| Expr STAR Expr { $$ = createNode(Node_Mul); insertChild($$, $1); insertBrother($$->child, $3); }
 	| Expr DIV Expr { $$ = createNode(Node_Div); insertChild($$, $1); insertBrother($$->child, $3); }
 	| Expr MOD Expr { $$ = createNode(Node_Mod); insertChild($$, $1); insertBrother($$->child, $3); }
     | Expr AND Expr { $$ = createNode(Node_And); insertChild($$, $1); insertBrother($$->child, $3); }
     | Expr OR Expr { $$ = createNode(Node_Or); insertChild($$, $1); insertBrother($$->child, $3); }
-	| Expr XOR Expr {; }
+	| Expr XOR Expr { $$ = createNode(Node_Xor); insertChild($$, $1); insertBrother($$->child, $3); }
 	| Expr LSHIFT Expr {; }
 	| Expr RSHIFT Expr {; }
     | Expr EQ Expr { $$ = createNode(Node_Eq); insertChild($$, $1); insertBrother($$->child, $3); }
@@ -515,9 +515,9 @@ Expr: Expr PLUS Expr {; }
     | Expr LE Expr { $$ = createNode(Node_Le); insertChild($$, $1); insertBrother($$->child, $3); }
     | Expr LT Expr { $$ = createNode(Node_Lt); insertChild($$, $1); insertBrother($$->child, $3); }
     | Expr NE Expr { $$ = createNode(Node_Ne); insertChild($$, $1); insertBrother($$->child, $3); }
-    | MINUS Expr { /*$$ = createNode(Node_Sub); insertChild($$, $1); insertBrother($$->child, $3);*/ }
-    | NOT Expr {; }
-	| PLUS Expr { /*$$ = createNode(Node_Add); insertChild($$, $1); insertBrother($$->child, $3); */}
+    | MINUS Expr { $$ = createNode(Node_Minus); insertChild($$, $2); }
+    | NOT Expr { $$ = createNode(Node_Not); insertChild($$, $2); }
+	| PLUS Expr { $$ = createNode(Node_Plus); insertChild($$, $2); }
     | LPAR Expr RPAR { $$ = $2; }
 	| MethodInvocation { $$ = $1; }
  	| Assignment { $$ = $1; }

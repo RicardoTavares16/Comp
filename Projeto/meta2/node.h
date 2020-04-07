@@ -28,10 +28,10 @@ typedef enum {
 	Node_Call,
 	Node_ParseArgs,
 	Node_Length,
-
 	Node_Mul,
 	Node_Div,
 	Node_Mod,
+	Node_Xor,
 	Node_And,
 	Node_Or,
 	Node_Eq,
@@ -41,7 +41,10 @@ typedef enum {
 	Node_Lt,
 	Node_Ne,
 	Node_Sub,
-	Node_Add
+	Node_Add,
+	Node_Not,
+	Node_Minus,
+	Node_Plus
 	
 
 }NodeType;
@@ -65,4 +68,4 @@ void changeType(Node* newType ,Node* nodes);
 void printTree(Node* node, int level);
 void printDots(int n);
 void printLeaf(Node* node);
-void free_tree(Node* root);
+void clearTree(Node* root);

@@ -23,7 +23,7 @@ const char* getTypeName(NodeType typeEnum)
 	case Node_Intlit: return "DecLit";
 	case Node_Reallit: return "RealLit";
 	case Node_Strlit: return "StrLit";
-	case Node_Boolit: return "Boolit";
+	case Node_Boolit: return "BoolLit";
 	case Node_FieldDecl: return "FieldDecl";
 	case Node_Comp: return "Comp";
 	case Node_MethodDecl: return "MethodDecl";
@@ -50,6 +50,7 @@ const char* getTypeName(NodeType typeEnum)
 	case Node_Mul: return "Mul";
 	case Node_Div: return "Div";
 	case Node_Mod: return "Mod";
+	case Node_Xor: return "Xor";
 	case Node_And: return "And";
 	case Node_Or: return "Or";
 	case Node_Eq: return "Eq";
@@ -60,7 +61,10 @@ const char* getTypeName(NodeType typeEnum)
 	case Node_Ne: return "Neq";
 	case Node_Sub: return "Sub";
 	case Node_Add: return "Add";
-	//not minus plus doWhile 
+	case Node_Not: return "Not";
+	case Node_Minus: return "Minus";
+	case Node_Plus: return "Plus";
+	//doWhile?
    }
 }
 
@@ -135,20 +139,20 @@ void printLeaf(Node* node){
 	printf("%s(%s)\n", getTypeName(node->type), node->value);
 }
 
-void free_tree(Node* root){
+void clearTree(Node* root){
     
     Node* tmp = NULL;
     Node* tmp_2 = NULL;
     Node* son = NULL;
 
-    if(root!=NULL){
+    if(root != NULL){
         tmp = root;
         son = root->child;
         free(tmp);
-        while(son!=NULL){
+        while( son != NULL){
         	tmp_2 = son;
         	son = son->brother;
-        	free_tree(tmp_2);
+        	clearTree(tmp_2);
         }
     }
 }
