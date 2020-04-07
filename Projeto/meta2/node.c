@@ -64,6 +64,9 @@ const char* getTypeName(NodeType typeEnum)
 	case Node_Not: return "Not";
 	case Node_Minus: return "Minus";
 	case Node_Plus: return "Plus";
+	case Node_LShift: return "Lshift";
+	case Node_RShift: return "Rshift";
+	default: return "";
 	//doWhile?
    }
 }

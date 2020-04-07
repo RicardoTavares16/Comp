@@ -109,7 +109,6 @@
 %left LSHIFT RSHIFT
 %left PLUS MINUS
 %left STAR DIV MOD 
-
 %right NOT
 %left LPAR RPAR LBRACE RBRACE LSQ RSQ 
 %right ELSE
@@ -160,7 +159,7 @@ FieldDecl: PUBLIC STATIC Type ID SubFieldDecl SEMICOLON
 					insertBrother($$, $5);
 					changeType($$, $5);
 				}
-				}
+			}
 		 | error SEMICOLON { syntaxError = 1; }
 		 ;		  
 
@@ -507,8 +506,8 @@ Expr: Expr PLUS Expr { $$ = createNode(Node_Add); insertChild($$, $1); insertBro
     | Expr AND Expr { $$ = createNode(Node_And); insertChild($$, $1); insertBrother($$->child, $3); }
     | Expr OR Expr { $$ = createNode(Node_Or); insertChild($$, $1); insertBrother($$->child, $3); }
 	| Expr XOR Expr { $$ = createNode(Node_Xor); insertChild($$, $1); insertBrother($$->child, $3); }
-	| Expr LSHIFT Expr {; }
-	| Expr RSHIFT Expr {; }
+	| Expr LSHIFT Expr { $$ = createNode(Node_LShift); insertChild($$, $1); insertBrother($$->child, $3); }
+	| Expr RSHIFT Expr { $$ = createNode(Node_RShift); insertChild($$, $1); insertBrother($$->child, $3); }
     | Expr EQ Expr { $$ = createNode(Node_Eq); insertChild($$, $1); insertBrother($$->child, $3); }
     | Expr GE Expr { $$ = createNode(Node_Ge); insertChild($$, $1); insertBrother($$->child, $3); }
     | Expr GT Expr { $$ = createNode(Node_Gt); insertChild($$, $1); insertBrother($$->child, $3); }

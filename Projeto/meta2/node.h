@@ -34,6 +34,8 @@ typedef enum {
 	Node_Xor,
 	Node_And,
 	Node_Or,
+	Node_RShift,
+	Node_LShift,
 	Node_Eq,
 	Node_Ge,
 	Node_Gt,
@@ -44,9 +46,7 @@ typedef enum {
 	Node_Add,
 	Node_Not,
 	Node_Minus,
-	Node_Plus
-	
-
+	Node_Plus,
 }NodeType;
 
 typedef struct node{
@@ -68,4 +68,6 @@ void changeType(Node* newType ,Node* nodes);
 void printTree(Node* node, int level);
 void printDots(int n);
 void printLeaf(Node* node);
+
+//Free mem
 void clearTree(Node* root);
