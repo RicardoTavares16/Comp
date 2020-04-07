@@ -506,8 +506,8 @@ Expr: Expr PLUS Expr { $$ = createNode(Node_Add); insertChild($$, $1); insertBro
     | Expr AND Expr { $$ = createNode(Node_And); insertChild($$, $1); insertBrother($$->child, $3); }
     | Expr OR Expr { $$ = createNode(Node_Or); insertChild($$, $1); insertBrother($$->child, $3); }
 	| Expr XOR Expr { $$ = createNode(Node_Xor); insertChild($$, $1); insertBrother($$->child, $3); }
-	| Expr LSHIFT Expr { $$ = createNode(Node_LShift); insertChild($$, $1); insertBrother($$->child, $3); }
-	| Expr RSHIFT Expr { $$ = createNode(Node_RShift); insertChild($$, $1); insertBrother($$->child, $3); }
+	| Expr LSHIFT Expr { ; }
+	| Expr RSHIFT Expr { ; }
     | Expr EQ Expr { $$ = createNode(Node_Eq); insertChild($$, $1); insertBrother($$->child, $3); }
     | Expr GE Expr { $$ = createNode(Node_Ge); insertChild($$, $1); insertBrother($$->child, $3); }
     | Expr GT Expr { $$ = createNode(Node_Gt); insertChild($$, $1); insertBrother($$->child, $3); }
@@ -515,7 +515,7 @@ Expr: Expr PLUS Expr { $$ = createNode(Node_Add); insertChild($$, $1); insertBro
     | Expr LT Expr { $$ = createNode(Node_Lt); insertChild($$, $1); insertBrother($$->child, $3); }
     | Expr NE Expr { $$ = createNode(Node_Ne); insertChild($$, $1); insertBrother($$->child, $3); }
     | MINUS Expr %prec NOT { $$ = createNode(Node_Minus); insertChild($$, $2); }
-    | NOT Expr %prec NOT { $$ = createNode(Node_Not); insertChild($$, $2); }
+    | NOT Expr { $$ = createNode(Node_Not); insertChild($$, $2); }
 	| PLUS Expr %prec NOT { $$ = createNode(Node_Plus); insertChild($$, $2); }
     | LPAR Expr RPAR { $$ = $2; }
 	| MethodInvocation { $$ = $1; }
