@@ -88,6 +88,7 @@
 %type <node> VarDecl
 %type <node> SubVarDecl
 %type <node> Expr
+%type <node> ExprWithoutAssign
 %type <node> OptExpr
 %type <node> ExprStrlit
 %type <node> Assignment
@@ -498,28 +499,32 @@ MultipleCommaExpr: Empty { $$ = NULL; }
 					}
 				 ;
 
-Expr: Expr PLUS Expr { $$ = createNode(Node_Add); insertChild($$, $1); insertBrother($$->child, $3); }
-	| Expr MINUS Expr { $$ = createNode(Node_Sub); insertChild($$, $1); insertBrother($$->child, $3); }
-	| Expr STAR Expr { $$ = createNode(Node_Mul); insertChild($$, $1); insertBrother($$->child, $3); }
-	| Expr DIV Expr { $$ = createNode(Node_Div); insertChild($$, $1); insertBrother($$->child, $3); }
-	| Expr MOD Expr { $$ = createNode(Node_Mod); insertChild($$, $1); insertBrother($$->child, $3); }
-    | Expr AND Expr { $$ = createNode(Node_And); insertChild($$, $1); insertBrother($$->child, $3); }
-    | Expr OR Expr { $$ = createNode(Node_Or); insertChild($$, $1); insertBrother($$->child, $3); }
-	| Expr XOR Expr { $$ = createNode(Node_Xor); insertChild($$, $1); insertBrother($$->child, $3); }
-	| Expr LSHIFT Expr { ; }
-	| Expr RSHIFT Expr { ; }
-    | Expr EQ Expr { $$ = createNode(Node_Eq); insertChild($$, $1); insertBrother($$->child, $3); }
-    | Expr GE Expr { $$ = createNode(Node_Ge); insertChild($$, $1); insertBrother($$->child, $3); }
-    | Expr GT Expr { $$ = createNode(Node_Gt); insertChild($$, $1); insertBrother($$->child, $3); }
-    | Expr LE Expr { $$ = createNode(Node_Le); insertChild($$, $1); insertBrother($$->child, $3); }
-    | Expr LT Expr { $$ = createNode(Node_Lt); insertChild($$, $1); insertBrother($$->child, $3); }
-    | Expr NE Expr { $$ = createNode(Node_Ne); insertChild($$, $1); insertBrother($$->child, $3); }
-    | MINUS Expr %prec UMINUS { $$ = createNode(Node_Minus); insertChild($$, $2); }
-    | NOT Expr { $$ = createNode(Node_Not); insertChild($$, $2); }
-	| PLUS Expr %prec UPLUS { $$ = createNode(Node_Plus); insertChild($$, $2); }
-    | LPAR Expr RPAR { $$ = $2; }
+Expr: Assignment { $$ = $1; }
+	| ExprWithoutAssign { $$ = $1; /*Evita que dentro da expressao leia Assignment*/} 
+	;
+
+ExprWithoutAssign: ExprWithoutAssign PLUS ExprWithoutAssign { $$ = createNode(Node_Add); insertChild($$, $1); insertBrother($$->child, $3); }
+	| ExprWithoutAssign MINUS ExprWithoutAssign { $$ = createNode(Node_Sub); insertChild($$, $1); insertBrother($$->child, $3); }
+	| ExprWithoutAssign STAR ExprWithoutAssign { $$ = createNode(Node_Mul); insertChild($$, $1); insertBrother($$->child, $3); }
+	| ExprWithoutAssign DIV ExprWithoutAssign { $$ = createNode(Node_Div); insertChild($$, $1); insertBrother($$->child, $3); }
+	| ExprWithoutAssign MOD ExprWithoutAssign { $$ = createNode(Node_Mod); insertChild($$, $1); insertBrother($$->child, $3); }
+    | ExprWithoutAssign AND ExprWithoutAssign { $$ = createNode(Node_And); insertChild($$, $1); insertBrother($$->child, $3); }
+    | ExprWithoutAssign OR ExprWithoutAssign { $$ = createNode(Node_Or); insertChild($$, $1); insertBrother($$->child, $3); }
+	| ExprWithoutAssign XOR ExprWithoutAssign { $$ = createNode(Node_Xor); insertChild($$, $1); insertBrother($$->child, $3); }
+	| ExprWithoutAssign LSHIFT ExprWithoutAssign { $$ = createNode(Node_LShift); insertChild($$, $1); insertBrother($$->child, $3); }
+	| ExprWithoutAssign RSHIFT ExprWithoutAssign { $$ = createNode(Node_RShift); insertChild($$, $1); insertBrother($$->child, $3); }
+    | ExprWithoutAssign EQ ExprWithoutAssign { $$ = createNode(Node_Eq); insertChild($$, $1); insertBrother($$->child, $3); }
+    | ExprWithoutAssign GE ExprWithoutAssign { $$ = createNode(Node_Ge); insertChild($$, $1); insertBrother($$->child, $3); }
+    | ExprWithoutAssign GT ExprWithoutAssign { $$ = createNode(Node_Gt); insertChild($$, $1); insertBrother($$->child, $3); }
+    | ExprWithoutAssign LE ExprWithoutAssign { $$ = createNode(Node_Le); insertChild($$, $1); insertBrother($$->child, $3); }
+    | ExprWithoutAssign LT ExprWithoutAssign { $$ = createNode(Node_Lt); insertChild($$, $1); insertBrother($$->child, $3); }
+    | ExprWithoutAssign NE ExprWithoutAssign { $$ = createNode(Node_Ne); insertChild($$, $1); insertBrother($$->child, $3); }
+    | MINUS ExprWithoutAssign %prec UMINUS { $$ = createNode(Node_Minus); insertChild($$, $2); }
+    | NOT ExprWithoutAssign { $$ = createNode(Node_Not); insertChild($$, $2); }
+	| PLUS ExprWithoutAssign %prec UPLUS { $$ = createNode(Node_Plus); insertChild($$, $2); }
+    | LPAR ExprWithoutAssign RPAR { $$ = $2; }
 	| MethodInvocation { $$ = $1; }
- 	| Assignment { $$ = $1; }
+
 	| ParseArgs { $$ = $1; }
     | ID OptDotLength 
 		{

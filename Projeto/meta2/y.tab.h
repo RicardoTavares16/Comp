@@ -92,7 +92,9 @@ extern int yydebug;
     INTLIT = 302,
     REALLIT = 303,
     STRLIT = 304,
-    BOOLLIT = 305
+    BOOLLIT = 305,
+    UMINUS = 306,
+    UPLUS = 307
   };
 #endif
 /* Tokens.  */
@@ -144,6 +146,8 @@ extern int yydebug;
 #define REALLIT 303
 #define STRLIT 304
 #define BOOLLIT 305
+#define UMINUS 306
+#define UPLUS 307
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -155,7 +159,7 @@ union YYSTYPE
 	char* string;
 	struct node* node;
 
-#line 159 "y.tab.h" /* yacc.c:1909  */
+#line 163 "y.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;
