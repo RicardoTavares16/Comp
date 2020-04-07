@@ -396,6 +396,7 @@ Statement: LBRACE MultipleStatements RBRACE
     	 | error SEMICOLON 
 			{
 				syntaxError = 1; 
+				$$ = createNode(Node_Error);
 			}
 		 ;
 
@@ -456,6 +457,7 @@ MethodInvocation: ID LPAR OptExprCommaExpr RPAR
 				| ID LPAR error RPAR 
 					{
 						syntaxError = 1;
+						$$ = createNode(Node_Error);
 					}
 				;
 
@@ -470,6 +472,7 @@ ParseArgs: PARSEINT LPAR ID LSQ Expr RSQ RPAR
 		 | PARSEINT LPAR error RPAR 
 		 	{
 				syntaxError = 1;
+				$$ = createNode(Node_Error);
 			}
 		 ;
 
@@ -542,6 +545,7 @@ ExprWithoutAssign: ExprWithoutAssign PLUS ExprWithoutAssign { $$ = createNode(No
     | LPAR error RPAR 
 		{
 			syntaxError = 1;
+			$$ = createNode(Node_Error);
 		}
 	;
 
