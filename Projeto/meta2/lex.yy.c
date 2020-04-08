@@ -720,7 +720,7 @@ struct Position commentTracker;
 struct Position stringTracker;
 
 extern Node* tree;
-extern int syntaxError;
+int syntaxError = 0;
 #line 725 "lex.yy.c"
 
 #line 727 "lex.yy.c"
@@ -2368,6 +2368,7 @@ int main(int argc, char** argv)
                 clearTree(tree);
 			}
             else{
+                printTree(tree, 0);
                 clearTree(tree);
             }
 		}
@@ -2383,4 +2384,9 @@ int main(int argc, char** argv)
 int yywrap()
 {
     return 1;
+}
+
+void yyerror (const char *s){
+	syntaxError = 1;
+	printf ("Line %d, col %d: %s: %s\n", line, (int)(column - strlen(yytext)), s, yytext);
 }

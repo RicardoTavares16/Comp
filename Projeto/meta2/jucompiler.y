@@ -9,7 +9,6 @@
     extern char* yytext;
 	extern int line, column;
     void yyerror (const char *s);
-	int syntaxError = 0;
 	Node* tree;
 	Node* aux_node;
 	Node* aux_node2;
@@ -110,7 +109,7 @@
 %left LSHIFT RSHIFT
 %left PLUS MINUS
 %left STAR DIV MOD 
-%right NOT UMINUS UPLUS
+%right NOT UMINUS UPLUS UNARY
 %left LPAR RPAR LBRACE RBRACE LSQ RSQ 
 %right ELSE
 
@@ -161,7 +160,7 @@ FieldDecl: PUBLIC STATIC Type ID SubFieldDecl SEMICOLON
 					changeType($$, $5);
 				}
 			}
-		 | error SEMICOLON { syntaxError = 1; }
+		 | error SEMICOLON { $$ = NULL; }
 		 ;		  
 
 SubFieldDecl: Empty { $$ = NULL; }
@@ -395,8 +394,7 @@ Statement: LBRACE MultipleStatements RBRACE
 			}
     	 | error SEMICOLON 
 			{
-				syntaxError = 1; 
-				$$ = createNode(Node_Error);
+				$$ = NULL;
 			}
 		 ;
 
@@ -456,8 +454,7 @@ MethodInvocation: ID LPAR OptExprCommaExpr RPAR
 					}
 				| ID LPAR error RPAR 
 					{
-						syntaxError = 1;
-						$$ = createNode(Node_Error);
+						$$ = NULL;
 					}
 				;
 
@@ -471,8 +468,7 @@ ParseArgs: PARSEINT LPAR ID LSQ Expr RSQ RPAR
 			}
 		 | PARSEINT LPAR error RPAR 
 		 	{
-				syntaxError = 1;
-				$$ = createNode(Node_Error);
+				$$ = NULL;
 			}
 		 ;
 
@@ -519,10 +515,10 @@ ExprWithoutAssign: ExprWithoutAssign PLUS ExprWithoutAssign { $$ = createNode(No
     | ExprWithoutAssign LE ExprWithoutAssign { $$ = createNode(Node_Le); insertChild($$, $1); insertBrother($$->child, $3); }
     | ExprWithoutAssign LT ExprWithoutAssign { $$ = createNode(Node_Lt); insertChild($$, $1); insertBrother($$->child, $3); }
     | ExprWithoutAssign NE ExprWithoutAssign { $$ = createNode(Node_Ne); insertChild($$, $1); insertBrother($$->child, $3); }
-    | MINUS ExprWithoutAssign %prec UMINUS { $$ = createNode(Node_Minus); insertChild($$, $2); }
-    | NOT ExprWithoutAssign { $$ = createNode(Node_Not); insertChild($$, $2); }
-	| PLUS ExprWithoutAssign %prec UPLUS { $$ = createNode(Node_Plus); insertChild($$, $2); }
-    | LPAR ExprWithoutAssign RPAR { $$ = $2; }
+    | MINUS ExprWithoutAssign %prec UNARY { $$ = createNode(Node_Minus); insertChild($$, $2); }
+    | NOT ExprWithoutAssign %prec UNARY{ $$ = createNode(Node_Not); insertChild($$, $2); }
+	| PLUS ExprWithoutAssign %prec UNARY { $$ = createNode(Node_Plus); insertChild($$, $2); }
+    | LPAR Expr RPAR { $$ = $2; }
 	| MethodInvocation { $$ = $1; }
 	| ParseArgs { $$ = $1; }
     | ID OptDotLength 
@@ -543,8 +539,7 @@ ExprWithoutAssign: ExprWithoutAssign PLUS ExprWithoutAssign { $$ = createNode(No
 	| REALLIT { $$ = createNode(Node_Reallit); $$->value = $1; }
     | LPAR error RPAR 
 		{
-			syntaxError = 1;
-			$$ = createNode(Node_Error);
+			$$ = NULL;
 		}
 	;
 
@@ -557,6 +552,3 @@ Empty: {; }
 
 %%
 
-void yyerror (const char *s){
-	printf ("Line %d, col %d: %s: %s\n", line, (int)(column - strlen(yytext)), s, yytext);
-}
