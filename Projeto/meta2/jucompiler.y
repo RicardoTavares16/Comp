@@ -105,7 +105,7 @@
 %left OR 
 %left AND 
 %left XOR
-%nonassoc EQ NE
+%left EQ NE
 %left GE LE GT LT
 %left LSHIFT RSHIFT
 %left PLUS MINUS

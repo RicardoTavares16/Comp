@@ -54,11 +54,11 @@ const char* getTypeName(NodeType typeEnum)
 	case Node_And: return "And";
 	case Node_Or: return "Or";
 	case Node_Eq: return "Eq";
-	case Node_Ge: return "Geq";
+	case Node_Ge: return "Ge";
 	case Node_Gt: return "Gt";
-	case Node_Le: return "Leq";
+	case Node_Le: return "Le";
 	case Node_Lt: return "Lt";
-	case Node_Ne: return "Neq";
+	case Node_Ne: return "Ne";
 	case Node_Sub: return "Sub";
 	case Node_Add: return "Add";
 	case Node_Not: return "Not";
