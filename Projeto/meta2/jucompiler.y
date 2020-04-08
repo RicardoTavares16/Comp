@@ -518,7 +518,7 @@ ExprWithoutAssign: ExprWithoutAssign PLUS ExprWithoutAssign { $$ = createNode(No
     | MINUS ExprWithoutAssign %prec UNARY { $$ = createNode(Node_Minus); insertChild($$, $2); }
     | NOT ExprWithoutAssign %prec UNARY{ $$ = createNode(Node_Not); insertChild($$, $2); }
 	| PLUS ExprWithoutAssign %prec UNARY { $$ = createNode(Node_Plus); insertChild($$, $2); }
-    | LPAR ExprWithoutAssign RPAR { $$ = $2; }
+    | LPAR Expr RPAR { $$ = $2; }
 	| MethodInvocation { $$ = $1; }
 	| ParseArgs { $$ = $1; }
     | ID OptDotLength 
