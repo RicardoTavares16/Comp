@@ -94,7 +94,8 @@ extern int yydebug;
     STRLIT = 304,
     BOOLLIT = 305,
     UMINUS = 306,
-    UPLUS = 307
+    UPLUS = 307,
+    UNARY = 308
   };
 #endif
 /* Tokens.  */
@@ -148,18 +149,19 @@ extern int yydebug;
 #define BOOLLIT 305
 #define UMINUS 306
 #define UPLUS 307
+#define UNARY 308
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 
 union YYSTYPE
 {
-#line 19 "jucompiler.y" /* yacc.c:1909  */
+#line 18 "jucompiler.y" /* yacc.c:1909  */
 
 	char* string;
 	struct node* node;
 
-#line 163 "y.tab.h" /* yacc.c:1909  */
+#line 165 "y.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;
