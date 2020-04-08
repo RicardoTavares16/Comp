@@ -96,7 +96,7 @@
 %type <node> MultipleCommaExpr
 %type <node> OptExprCommaExpr
 %type <node> ParseArgs
-%type <node> OptAssignMethodinvoParseargs
+%type <node> OptMethodinvoAssignParseargs
 %type <node> OptDotLength
 
 
@@ -384,7 +384,7 @@ Statement: LBRACE MultipleStatements RBRACE
 					insertChild($$, $2);
 				}
 			}
-		 | OptAssignMethodinvoParseargs SEMICOLON 
+		 | OptMethodinvoAssignParseargs SEMICOLON 
 			{
 				$$ = $1; 
 			}
@@ -418,8 +418,8 @@ OptExpr: Expr { $$ = $1; }
 	   | Empty { $$ = NULL; }
 	   ;
 
-OptAssignMethodinvoParseargs: Assignment { $$ = $1; }
-							| MethodInvocation { $$ = $1; }
+OptMethodinvoAssignParseargs: MethodInvocation { $$ = $1; }
+							| Assignment { $$ = $1; }
 							| ParseArgs { $$ = $1; }
 							| Empty { $$ = NULL; }
 							;
@@ -524,7 +524,6 @@ ExprWithoutAssign: ExprWithoutAssign PLUS ExprWithoutAssign { $$ = createNode(No
 	| PLUS ExprWithoutAssign %prec UPLUS { $$ = createNode(Node_Plus); insertChild($$, $2); }
     | LPAR ExprWithoutAssign RPAR { $$ = $2; }
 	| MethodInvocation { $$ = $1; }
-
 	| ParseArgs { $$ = $1; }
     | ID OptDotLength 
 		{

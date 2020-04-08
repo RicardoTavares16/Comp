@@ -575,7 +575,7 @@ static const char *const yytname[] =
   "SubProgram", "FieldDecl", "SubFieldDecl", "Type", "MethodDecl",
   "MethodHeader", "FormalParams", "SubFormalParams", "MethodBody",
   "SubMethodBody", "VarDecl", "SubVarDecl", "Statement",
-  "MultipleStatements", "OptExpr", "OptAssignMethodinvoParseargs",
+  "MultipleStatements", "OptExpr", "OptMethodinvoAssignParseargs",
   "ExprStrlit", "Assignment", "MethodInvocation", "ParseArgs",
   "OptExprCommaExpr", "MultipleCommaExpr", "Expr", "ExprWithoutAssign",
   "OptDotLength", "Empty", YY_NULLPTR
@@ -641,7 +641,7 @@ static const yytype_uint8 yydefact[] =
       13,    12,     0,     0,     0,     0,    87,    87,    14,    87,
        0,    87,     0,     9,     0,    23,     0,     0,     0,    19,
       87,     0,     7,     0,     0,    22,     0,     0,     0,    87,
-       0,     0,     0,    25,    24,     0,    41,    42,    43,    44,
+       0,     0,     0,    25,    24,     0,    42,    41,    43,    44,
        0,    87,    16,    10,    15,    36,     0,     0,    37,     0,
        0,     0,     0,     0,     0,     0,    87,    81,    83,    82,
        0,    56,    78,    79,    39,    57,    40,     0,     0,     0,
