@@ -1265,7 +1265,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case YY_STATE_EOF(COMMENT):
 #line 98 "jucompiler.l"
-{printf("Line %d, col %d: unterminated comment\n", commentTracker.line, commentTracker.column); yyterminate();}
+{if(multiLineComment == 1){printf("Line %d, col %d: unterminated comment\n", commentTracker.line, commentTracker.column); yyterminate();} else{BEGIN 0;}}
 	YY_BREAK
 case 53:
 YY_RULE_SETUP

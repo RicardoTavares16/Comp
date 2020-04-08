@@ -95,7 +95,7 @@ strlit "\""(([^"\\\n\r]|({escapes}))*)"\""
 "/*" {multiLineComment = 1;BEGIN COMMENT; commentTracker.line = line; commentTracker.column = column; column += yyleng;}
 <COMMENT>"*/" {if(multiLineComment == 1){multiLineComment = 0; BEGIN 0;} column = 1;}
 <COMMENT>(\n|\r|\r\n) {if(multiLineComment == 0){BEGIN 0;} line++; column = 1;} //apanha comentario simples
-<COMMENT><<EOF>> {printf("Line %d, col %d: unterminated comment\n", commentTracker.line, commentTracker.column); yyterminate();}
+<COMMENT><<EOF>> {if(multiLineComment == 1){printf("Line %d, col %d: unterminated comment\n", commentTracker.line, commentTracker.column); yyterminate();} else{BEGIN 0;}}
 <COMMENT>. {column += yyleng;}
 
 
