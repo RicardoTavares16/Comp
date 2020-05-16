@@ -1,7 +1,4 @@
 #include "node.h"
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
 
 Node* createNode(NodeType type){
 	Node* node = (Node*)malloc(sizeof(Node));

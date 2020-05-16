@@ -1,3 +1,10 @@
+#ifndef NODE_H
+#define NODE_H
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
 typedef enum {
     Node_Program,
 	Node_Id,
@@ -71,3 +78,5 @@ void printLeaf(Node* node);
 
 //Free mem
 void clearTree(Node* root);
+
+#endif
