@@ -1,6 +1,9 @@
 %{
 #include "y.tab.h"
 #include "node.h"
+#include "symtable.h"
+#include "semantics.h"
+
 //2014230130 Ricardo Sintra Tavares
 
 int multiLineComment = 0;
