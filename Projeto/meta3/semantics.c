@@ -3,15 +3,6 @@
 extern Table *symTable;
 Table *classTable;
 
-static char *semantic_errors[] = {"Cannot find symbol %s>",
-"Incompatible type %s in <token> statement",
-"Number %s out of bounds",
-"Operator %s cannot be applied to type <type>",
-"Operator %s cannot be applied to types <type>, <type>",
-"Reference to method %s is ambiguous",
-"Symbol %s already defined"};
-
-
 void createSymbolTable(Node *node)
 {
     Node *aux = node;
@@ -54,32 +45,84 @@ void analyzeNode(Node *node)
 
 void addFieldDecl(Node *node)
 {
-    Symbol *new_symbol;
+    Symbol *newSymbol;
 
     NodeType nodeType = node->child->type;
-    char *node_name = node->child->brother->value;
+    char *nodeName = node->child->brother->value;
 
     SymbolType symbolType = getSymbolType(nodeType);
 
-    new_symbol = createSymbol(node_name, symbolType, 0, 0);
-    insertSymbol(classTable, new_symbol);
+    newSymbol = createSymbol(nodeName, symbolType, 0, 0);
+    insertSymbol(classTable, newSymbol);
 }
 
-void addVardecl(Table* tbl, Node* aux_node){ 
-	char* node_name = aux_node->child->brother->value; 
-	NodeType nodeType = aux_node->child->type;
+void addVardecl(Table *tbl, Node *auxNode)
+{
+    char *nodeName = auxNode->child->brother->value;
+    NodeType nodeType = auxNode->child->type;
 
-	SymbolType symbolType = getSymbolType(nodeType);
+    SymbolType symbolType = getSymbolType(nodeType);
 
-	Symbol *new_symbol = createSymbol(node_name,symbolType,0,0);
-	if(tbl != NULL){
-		if(searchSymbol(tbl,node_name)==NULL){
-			insertSymbol(tbl,new_symbol);
-		}
-		else{
-			printf(semantic_errors[6], node_name);
-		}
-	}
+    Symbol *newSymbol = createSymbol(nodeName, symbolType, 0, 0);
+    if (tbl != NULL)
+    {
+        if (searchSymbol(tbl, nodeName) == NULL)
+        {
+            insertSymbol(tbl, newSymbol);
+        }
+        else
+        {
+            printf("Symbol %s already defined", nodeName);
+        }
+    }
+}
+
+void addMethodDecl(Node *auxNode)
+{
+    NodeType nodeType = auxNode->child->child->type;
+    char *nodeName = auxNode->child->child->brother->value;
+    Table *methodTbl = insertTable(nodeName, 1);
+    Node *insideparam;
+    NodeType paramtype;
+    Symbol *newSymbol;
+
+    SymbolType symbolType = getSymbolType(nodeType);
+
+    newSymbol = createSymbol("return", symbolType, 0, 1);
+    insertSymbol(methodTbl, newSymbol);
+
+    newSymbol = createSymbol(nodeName, symbolType, 0, 1);
+    newSymbol->tablePointer = methodTbl;
+    insertSymbol(classTable, newSymbol);
+
+    Node *paramdecl;
+    paramdecl = auxNode->child->child->brother->brother->child;
+    while (paramdecl != NULL)
+    { 
+        insideparam = paramdecl->child;
+        while (insideparam->brother != NULL)
+        {
+            paramtype = insideparam->type;
+
+            SymbolType symbolType = getSymbolType(paramtype);
+
+            newSymbol = createSymbol(insideparam->brother->value, symbolType, 1, 0);
+            insertSymbol(methodTbl, newSymbol);
+            insideparam = insideparam->brother;
+        }
+        paramdecl = paramdecl->brother;
+    }
+
+    Node *mbchild;
+    mbchild = auxNode->child->brother->child;
+    while (mbchild != NULL)
+    {
+        if (mbchild->type == Node_VarDecl)
+        {
+            addVardecl(methodTbl, mbchild);
+        }
+        mbchild = mbchild->brother;
+    }
 }
 
 //Remake this
@@ -107,78 +150,4 @@ SymbolType getSymbolType(NodeType nodeType)
         symbolType = Symbol_Boolean;
     }
     return symbolType;
-}
-
-void addMethodDecl(Node* aux_node){
-
-	NodeType node_type = aux_node->child->child->type;
-	char *node_name = aux_node->child->child->brother->value;
-	Table *method_tbl = insertTable(node_name,1);
-	Node* insideparam;
-	NodeType paramtype;
-	Symbol *new_symbol;
-
-    SymbolType symbolType = getSymbolType(node_type);
-   
-	new_symbol = createSymbol("return",symbolType,0,1);
-	insertSymbol(method_tbl,new_symbol);
-		
-	//criar simbolo para adicionar a tabela da classe
-	
-	new_symbol = createSymbol(node_name,symbolType,0,1);
-	new_symbol->tablePointer = method_tbl;
-	insertSymbol(classTable,new_symbol);
-
-	//TODO: ver todos os ParamDecl e criar simbolos para por na tabela, isto ainda nao esta a funcionar bem
-	
-	Node* paramdecl;
-	paramdecl = aux_node->child->child->brother->brother->child;
-	//printf(">>> Paramdecl: %s\n",Node_names[paramdecl->type]);
-	while(paramdecl != NULL){ // if ParamDecl != null
-		insideparam = paramdecl->child;
-		while(insideparam->brother != NULL){
-			paramtype = insideparam->type;
-			  if (paramtype == Node_StringArray)
-            {
-                symbolType = Symbol_StringArray;
-            }
-            if (paramtype == Node_Int)
-            {
-                symbolType = Symbol_Int;
-            }
-            if (paramtype == Node_Double)
-            {
-                symbolType = Symbol_Double;
-            }
-            if (paramtype == Node_Void)
-            {
-                symbolType = Symbol_Void;
-            }
-            if (paramtype == Node_Bool)
-            {
-                symbolType = Symbol_Boolean;
-            }
-
-
-			//printf("<<>><<>> TIPO: %s\n",insideparam->brother->value);
-			new_symbol = createSymbol(insideparam->brother->value,symbolType,1,0);
-			//printf("METHOD TABLE : %s\n", method_tbl->name);
-			insertSymbol(method_tbl,new_symbol);
-			//insert_symbol(class_table,new_symbol);
-			insideparam= insideparam->brother;	
-		}
-		paramdecl=paramdecl->brother;
-
-	}
-	
-	Node* mbchild; // Ponteiro do MethodBody's Child
-	mbchild = aux_node->child->brother->child;
-	while(mbchild != NULL){
-		//printf("Comparing node type %s with VarDecl\n",Node_names[mbchild->type]);
-		if(mbchild->type == Node_VarDecl){
-			addVardecl(method_tbl, mbchild);
-		}
-		mbchild = mbchild->brother;
-	}
-
 }

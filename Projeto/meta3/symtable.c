@@ -131,11 +131,9 @@ const char* getSymbolTypeName(SymbolType typeEnum)
     case Symbol_Void: return "void";
     case Symbol_Boolean: return "boolean";
 	default: return "";
-	//doWhile?
    }
 }
 
-//TODO REDO FUNCTION
 char *getParams(Table *table)
 {
     Symbol *son = table->child;
