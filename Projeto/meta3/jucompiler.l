@@ -1,8 +1,8 @@
 %{
 #include "y.tab.h"
 #include "node.h"
-#include "symtable.h"
 #include "semantics.h"
+#include "symtable.h"
 
 //2014230130 Ricardo Sintra Tavares
 
@@ -20,6 +20,8 @@ struct Position stringTracker;
 
 extern Node* tree;
 int syntaxError = 0;
+
+Table* symTable;
 %}
 
 number [0-9]+
@@ -144,6 +146,18 @@ int main(int argc, char** argv)
                 clearTree(tree);
             }
 		}
+        else if(strcmp(argv[1],"-s") == 0){
+            printTokens = 0;
+            yyparse();
+            if(syntaxError == 0){
+                createSymbolTable(tree);
+                printTree(tree, 0);
+                clearTree(tree);
+            }
+            else{
+                clearTree(tree);
+            }
+        }
     }
     else if(argc == 1){
         printTokens = 0;

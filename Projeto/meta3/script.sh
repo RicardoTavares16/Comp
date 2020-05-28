@@ -2,5 +2,4 @@
 
 lex jucompiler.l
 yacc -d jucompiler.y
-gcc -g -Wall -o jucompiler node.c y.tab.c semantics.c symtable.c lex.yy.c
-
+gcc -g -Wall -o jucompiler lex.yy.c y.tab.c node.c semantics.c symtable.c 

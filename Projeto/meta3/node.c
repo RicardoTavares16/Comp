@@ -128,6 +128,30 @@ void printTree(Node* node, int level){
 	}
 }
 
+void printAnotedTree(Node* node, int level){
+	printDots(level);
+	if(node != NULL){
+		if (node->type == Node_Id || node->type == Node_Intlit || node->type == Node_Reallit || node->type == Node_Strlit || node->type == Node_Boolit){
+			printLeaf(node);
+		}
+		else{
+			printf("%s\n", getTypeName(node->type));	
+		}
+
+
+
+
+		Node* child = node->child;
+		if (child != NULL){
+			printAnotedTree(child,level+1);
+			while(child->brother != NULL){
+				child = child->brother;
+				printAnotedTree(child,level +1);
+			}
+		}
+	}
+}
+
 void printDots(int n){
 	while(n > 0){
 		printf("..");
