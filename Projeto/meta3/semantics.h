@@ -4,7 +4,7 @@
 #include "node.h"
 #include "symtable.h"
 
-void createSymbolTable(Node *node);
+void semanticAnalysis(Node *node);
 void addProgram(Node *node);
 void analyzeNode(Node *node);
 void addFieldDecl(Node *node);

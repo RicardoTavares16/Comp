@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include "symtable.h"
 
 typedef enum {
     Node_Program,
@@ -62,6 +63,7 @@ typedef struct node{
 	struct node* brother;
 	struct node* child;
 	char* value;
+	SymbolType primitiveType;
 }Node;
 
 //AST

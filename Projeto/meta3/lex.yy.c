@@ -2380,7 +2380,9 @@ int main(int argc, char** argv)
             printTokens = 0;
             yyparse();
             if(syntaxError == 0){
-                createSymbolTable(tree);
+                semanticAnalysis(tree);
+                printTable(symTable);
+                printf("\n");
                 printTree(tree, 0);
                 clearTree(tree);
             }

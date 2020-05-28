@@ -3,7 +3,7 @@
 extern Table *symTable;
 Table *classTable;
 
-void createSymbolTable(Node *node)
+void semanticAnalysis(Node *node)
 {
     Node *aux = node;
     if (strcmp("Program", getTypeName(aux->type)) == 0)
@@ -19,7 +19,7 @@ void createSymbolTable(Node *node)
         aux = aux->brother;
     }
 
-    printTable(symTable);
+    
 }
 
 void addProgram(Node *node)
