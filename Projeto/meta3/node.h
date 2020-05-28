@@ -77,6 +77,7 @@ void changeType(Node* newType ,Node* nodes);
 void printTree(Node* node, int level);
 void printDots(int n);
 void printLeaf(Node* node);
+void printAnotedTree(Node* node, int level);
 
 //Free mem
 void clearTree(Node* root);
