@@ -119,6 +119,8 @@ void addMethodDecl(Node *auxNode)
         {
             addVardecl(methodTbl, mbchild);
         }
+
+        //TODO Anotate Node
         mbchild = mbchild->brother;
     }
 }

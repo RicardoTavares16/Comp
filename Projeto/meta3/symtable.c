@@ -53,10 +53,10 @@ Symbol *createSymbol(char *name, SymbolType type, int isParam, int varMethod)
     Symbol *symbol = (Symbol *)malloc(sizeof(Symbol));
     symbol->name = name;
     symbol->symType = type;
-    symbol->isParam = isParam;
     symbol->brother = NULL;
-    symbol->varMethod = varMethod;
+    symbol->isParam = isParam;
     symbol->tablePointer = NULL;
+    symbol->varMethod = varMethod;
     return symbol;
 }
 
@@ -98,8 +98,8 @@ Symbol *searchSymbol(Table *table, char *symbolName)
 
 void printTable(Table *table)
 {
-    Table *tmp;
-    tmp = table;
+    
+    Table *tmp = table;
     while (tmp != NULL)
     {
         if (tmp->type == 0)

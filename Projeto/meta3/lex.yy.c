@@ -2383,7 +2383,7 @@ int main(int argc, char** argv)
                 semanticAnalysis(tree);
                 printTable(symTable);
                 printf("\n");
-                printTree(tree, 0);
+                printAnotedTree(tree, 0);
                 clearTree(tree);
             }
             else{
