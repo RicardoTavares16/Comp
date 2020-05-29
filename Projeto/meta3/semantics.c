@@ -18,8 +18,6 @@ void semanticAnalysis(Node *node)
         analyzeNode(aux);
         aux = aux->brother;
     }
-
-    
 }
 
 void addProgram(Node *node)
@@ -95,17 +93,18 @@ void addMethodDecl(Node *auxNode)
     newSymbol->tablePointer = methodTbl;
     insertSymbol(classTable, newSymbol);
 
-    Node *paramdecl;
-    paramdecl = auxNode->child->child->brother->brother->child;
+    Node *paramdecl = auxNode->child->child->brother->brother->child;
+    
     while (paramdecl != NULL)
     { 
         insideparam = paramdecl->child;
+        
         while (insideparam->brother != NULL)
         {
             paramtype = insideparam->type;
 
             SymbolType symbolType = getSymbolType(paramtype);
-
+            
             newSymbol = createSymbol(insideparam->brother->value, symbolType, 1, 0);
             insertSymbol(methodTbl, newSymbol);
             insideparam = insideparam->brother;
@@ -113,8 +112,7 @@ void addMethodDecl(Node *auxNode)
         paramdecl = paramdecl->brother;
     }
 
-    Node *mbchild;
-    mbchild = auxNode->child->brother->child;
+    Node *mbchild = auxNode->child->brother->child;
     while (mbchild != NULL)
     {
         if (mbchild->type == Node_VarDecl)
