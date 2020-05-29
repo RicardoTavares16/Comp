@@ -12,8 +12,8 @@ typedef enum {
 typedef struct table{
 	char* name;
 	int type; // 0 = class 1 = method
-	struct symbol* child;
 	struct table* brother;
+	struct symbol* child;
 } Table;
 
 typedef struct symbol{
@@ -22,7 +22,7 @@ typedef struct symbol{
 	int varMethod; // 0 = var 1 = method
 	int isParam; 
 	struct symbol* brother;
-	struct table* tablePointer; // só usado se for um MethodDecl
+	struct table* tablePointer;
 } Symbol;
 
 Table *insertTable(char *name, int type);
