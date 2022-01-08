@@ -1,7 +1,0 @@
-Grupo: Dei
-Nome1:Francisco Pinto Aires Basto
-Numero1:2013138182 
-Email1: fbasto@student.dei.uc.pt
-Nome2:Rui Pedro Ferreira Mendes 
-Numero2:2013135669
-Email2:rpmendes@student.dei.uc.pt
